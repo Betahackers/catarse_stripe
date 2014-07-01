@@ -3,7 +3,15 @@ module CatarseStripe
     class Stripe
 
       def process!(backer, data)
-        status = data["checkout_status"] || "pending"
+        
+        
+        status = data["captured"]
+        
+        puts 'jasonjasonjason'
+        puts data
+        puts '------'
+        puts status
+        puts '---'
 
         notification = backer.payment_notifications.new({
           extra_data: data
@@ -11,15 +19,15 @@ module CatarseStripe
 
         notification.save!
 
-        backer.confirm! if success_payment?(status)
+        backer.waiting! if captured?(status)
       rescue Exception => e
         ::Airbrake.notify({ :error_class => "Stripe Processor Error", :error_message => "Stripe Processor Error: #{e.inspect}", :parameters => data}) rescue nil
       end
 
       protected
 
-      def success_payment?(status)
-        status == 'PaymentActionCompleted'
+      def captured?(status)
+        status == true
       end
 
     end

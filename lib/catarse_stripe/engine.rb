@@ -2,9 +2,9 @@ module CatarseStripe
   class Engine < ::Rails::Engine
     isolate_namespace CatarseStripe
 
-    config.to_prepare do
-      ApplicationController.helper(ApplicationHelper)
-    end
+    # config.to_prepare do
+    #   ApplicationController.helper(ApplicationHelper)
+    # end
   end
 
 
