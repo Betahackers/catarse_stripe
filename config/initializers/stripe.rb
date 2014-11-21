@@ -1,9 +1,12 @@
+require 'stripe'
+require 'stripe_event'
+
 #Main Platform Stripe Keys - Enter manually according to catarse_stripe README or add to seeds.db - 
 #As it stands, because of Stripe Connect, the only key being referred to here is the Main Platform App key 'stripe_client_id' in Omniauth.rb
 Rails.configuration.stripe = {
-  :publishable_key => (::Configuration['stripe_api_key']),
-  :secret_key      => (::Configuration['stripe_secret_key']),
-  :stripe_client_id => (::Configuration['stripe_client_id'])
+  :publishable_key => (::CatarseSettings['stripe_api_key']),
+  :secret_key      => (::CatarseSettings['stripe_secret_key']),
+  :stripe_client_id => (::CatarseSettings['stripe_client_id'])
 }
 
 Stripe.api_key = Rails.configuration.stripe[:secret_key]
@@ -17,12 +20,12 @@ StripeEvent.configure do |events|
     # event.type        #=> "charge.failed"
     # event.data.object #=> #<Stripe::Charge:0x3fcb34c115f8>
     # binding.pry
-    b = Backer.find_by_payment_id(event.data.object.id)
+    b = Contribution.find_by_payment_id(event.data.object.id)
     b.confirm!
   end
   
   events.subscribe 'charge.failed' do |event|
-    b = Backer.find_by_payment_id(event.data.object.id)
+    b = Contribution.find_by_payment_id(event.data.object.id)
     b.decline!
   end
 

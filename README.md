@@ -29,7 +29,7 @@ Configure the routes for your Catarse application. Add the following lines in th
 
     mount CatarseStripe::Engine => "/", :as => "catarse_stripe"
 
-### Configurations  
+### CatarseSettingss  
 
 Signup for an account at [STRIPE PAYMENTS](http://www.stripe.com) - Go into your account settings and get your API Keys - Be sure to use your 'Test' keys until you're ready to go live. Alos make sure the live/test toggle in the Dashboard is appropriately set.  
 
@@ -41,13 +41,13 @@ Create this configurations into Catarse database:
 
 In Rails console, run this:
 
-    Configuration.create!(name: "stripe_api_key", value: "API_KEY")
-    Configuration.create!(name: "stripe_secret_key", value: "SECRET_KEY")
-    Configuration.create!(name: "stripe_test", value: "TRUE/FALSE")
+    CatarseSettings.create!(name: "stripe_api_key", value: "API_KEY")
+    CatarseSettings.create!(name: "stripe_secret_key", value: "SECRET_KEY")
+    CatarseSettings.create!(name: "stripe_test", value: "TRUE/FALSE")
     
 If you've already created your application and been approved at Stripe.com add your Client_id  
 
-    Configuration.create!(name: "stripe_client_id", value: "STRIPE_CLIENT_ID")  
+    CatarseSettings.create!(name: "stripe_client_id", value: "STRIPE_CLIENT_ID")  
 
 NOTE: Be sure to add the correct keys from the API section of your Stripe account settings. Stripe_Test: TRUE = Using Stripe Test Server/Sandbox Mode / FALSE = Using Stripe live server.  
 
@@ -96,7 +96,7 @@ Setting up Omniauth for Stripe is exactly like setting up other providers. Add p
       provider :open_id, :name => 'google', :identifier => 'https://www.google.com/accounts/o8/id'
       provider :open_id, :name => 'yahoo', :identifier => 'yahoo.com'
       provider :facebook, ENV['FACEBOOK_APP_ID'], ENV['FACEBOOK_APP_SECRET'], {:client_options => {:ssl => {:ca_path => "/etc/ssl/certs"}}, :scope => 'publish_stream,email'}
-      provider :stripe_connect, Configuration['stripe_client_id'], Configuration['stripe_secret_key'], {:scope => 'read_write', :stripe_landing => 'register'}
+      provider :stripe_connect, CatarseSettings['stripe_client_id'], CatarseSettings['stripe_secret_key'], {:scope => 'read_write', :stripe_landing => 'register'}
     
     ...  
 
@@ -147,7 +147,7 @@ The insert `check_for_stripe_keys` in the :show method above the 'show!' entry l
       show!{
         @title = @project.name
         @rewards = @project.rewards.order(:minimum_value).all
-        @backers = @project.backers.confirmed.limit(12).order("confirmed_at DESC").all
+        @contributions = @project.contributions.confirmed.limit(12).order("confirmed_at DESC").all
         fb_admins_add(@project.user.facebook_id) if @project.user.facebook_id
         @update = @project.updates.where(:id => params[:update_id]).first if params[:update_id].present?
       }

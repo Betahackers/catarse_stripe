@@ -1,6 +1,6 @@
 CATARSE.UserDocument = Backbone.View.extend({
   onUserDocumentKeyup: function(e){
-    var backerId = $('input#backer_id').val();
+    var contributionId = $('input#contribution_id').val();
     var projectId = $('input#project_id').val();
 
     var $documentField = $(e.currentTarget);
@@ -13,8 +13,8 @@ CATARSE.UserDocument = Backbone.View.extend({
         $documentField.addClass('ok').removeClass('error');
         //$documentField.attr('disabled', true);
 
-        $.post('/projects/' + projectId + '/backers/' + backerId + '/update_info', {
-          backer: { payer_document: documentNumber }
+        $.post('/projects/' + projectId + '/contributions/' + contributionId + '/update_info', {
+          contribution: { payer_document: documentNumber }
         });
 
       } else {
