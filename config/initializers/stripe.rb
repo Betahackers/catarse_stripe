@@ -4,9 +4,9 @@ require 'stripe_event'
 #Main Platform Stripe Keys - Enter manually according to catarse_stripe README or add to seeds.db - 
 #As it stands, because of Stripe Connect, the only key being referred to here is the Main Platform App key 'stripe_client_id' in Omniauth.rb
 Rails.configuration.stripe = {
-  :publishable_key => (::CatarseSettings['stripe_api_key']),
-  :secret_key      => (::CatarseSettings['stripe_secret_key']),
-  :stripe_client_id => (::CatarseSettings['stripe_client_id'])
+  :publishable_key => (::CatarseSettings.get_without_cache('stripe_api_key')),
+  :secret_key      => (::CatarseSettings.get_without_cache('stripe_secret_key')),
+  :stripe_client_id => (::CatarseSettings.get_without_cache('stripe_client_id'))
 }
 
 Stripe.api_key = Rails.configuration.stripe[:secret_key]

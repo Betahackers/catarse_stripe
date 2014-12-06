@@ -36,7 +36,7 @@ module CatarseStripe::Payment
       # :headers => {'Authorization' => "#{::CatarseSettings['stripe_secret_key']}"} #Platform Secret Key
       # })
       
-      @response = @client.auth_code.get_token(code, :client_secret=>::CatarseSettings['stripe_secret_key'], :params => {:scope => 'read_write'})
+      @response = @client.auth_code.get_token(code, :client_secret=>::CatarseSettings.get_without_cache('stripe_secret_key'), :params => {:scope => 'read_write'})
       
       #Save PROJECT owner's new keys
       @stripe_user.stripe_access_token = @response.token
@@ -100,7 +100,7 @@ module CatarseStripe::Payment
 
     def pay_auth
       @contribution = current_user.contributions.find params[:id]
-      access_token = ::CatarseSettings[:stripe_secret_key] #@contribution.project.stripe_access_token #Project Owner SECRET KEY
+      access_token = ::CatarseSettings.get_without_cache(:stripe_secret_key) #@contribution.project.stripe_access_token #Project Owner SECRET KEY
       begin
         customer = Stripe::Customer.create(
           {
@@ -211,7 +211,7 @@ module CatarseStripe::Payment
     def setup_auth_gateway
       session[:oauth] ||= {}
 
-      @client = OAuth2::Client.new((::CatarseSettings['stripe_client_id']), (::CatarseSettings['stripe_api_key']), {
+      @client = OAuth2::Client.new((::CatarseSettings.get_without_cache('stripe_client_id')), (::CatarseSettings.get_without_cache('stripe_api_key')), {
         :site => 'https://connect.stripe.com',
         :authorize_url => '/oauth/authorize',
         :token_url => '/oauth/token'
